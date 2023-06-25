@@ -88,7 +88,7 @@ def get_datetime_str(datetime:datetime) -> str:
     return datetime.strftime('%Y%m%d-%H%M%S')
       
       
-def get_databases(args: argparse.Namespace, db_names: list[str]) -> dict[Database]:
+def get_databases(args: argparse.Namespace, db_names: list[str]) -> dict[str, Database]:
     '''Returns dict of all Databases in target directory.'''
     
     databases = {}
