@@ -35,7 +35,11 @@ def get_db_list(args:argparse.Namespace)  -> list[str]:
     # Check for existing files in target dir
     files = os.listdir(args.search_dir)
     
-    files = [file for file in files if os.path.isfile(args.search_dir + '/' + file)]
+    # Filters file names without hyphen
+    files = filter(lambda file: file[8] == '-',files)
+        
+    
+    # files = [file for file in files if os.path.isfile(args.search_dir + '/' + file)]
     if not files:
         sys.exit(f'No files found: "{args.export_dir}"')
 
