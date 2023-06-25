@@ -1,3 +1,8 @@
 CONFIG = {
-    "title_prefix": "extract_metrics_"
+    "title_prefix": "extract_metrics_",
+    "db_table_target": "extract_metrics",
+    "extract_cols": ["artifact_type",
+                     "seconds_elapsed",
+                      "api_call_count"]
+    
 }

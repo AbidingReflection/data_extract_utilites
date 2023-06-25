@@ -2,15 +2,15 @@ import argparse
 from dataclasses import dataclass
 import datetime
 import sqlite3
+from config import CONFIG
 
 
 @dataclass
 class Record:
-    '''A class to represent a record.'''
-    
-    api_call_count: int
+    '''A class to represent a record.'''        
     artifact_type: str
-    seconds_elapsed:int
+    seconds_elapsed: int
+    api_call_count: int
 
 
 @dataclass
@@ -29,23 +29,34 @@ class Database:
     
     def get_records(self, args:argparse.Namespace) -> list[Record]:
         '''Returns all db records from Database in a list'''
+        
+        def get_query_str():
+            col_str = ""
+            for col in CONFIG["extract_cols"]:
+                col_str = col_str + col + ", "
+            if len(col_str) > 2:
+                col_str = col_str[:-2]
+            
+            query_str = f'''SELECT {col_str}
+                        FROM {CONFIG["db_table_target"]}
+                         '''
+
+            return query_str
 
         path_str = args.search_dir + '/' + self.file_name
         
         con = sqlite3.connect(path_str)
         cur = con.cursor()
         
-        cur.execute(''' SELECT  artifact_type,
-                                seconds_elapsed,
-                                api_call_count
-                        FROM extract_metrics''')
+        query_str = get_query_str()
+
+        cur.execute(query_str)
         data = cur.fetchall()
         
         records = []
+        
         for row in data:
-            record = Record(artifact_type=row[0],
-                            seconds_elapsed=row[1],
-                            api_call_count=row[2])
+            record = Record(*row)
             records.append(record)
         
         return records
@@ -101,10 +112,10 @@ def extract_records(databases: dict[Database]) -> list[dict]:
         db_records = databases[db].records
         
         for record in db_records:
-            record_entry = {"timestamp": str(databases[db].extract_time),
-                            "api_call_count":record.api_call_count,
-                            "artifact_type":record.artifact_type,
-                            "seconds_elapsed":record.seconds_elapsed}
+            record_entry = {"timestamp": str(databases[db].extract_time)}
+            
+            for col in CONFIG["extract_cols"]:
+                record_entry[col] = getattr(record, col)
             
             records.append(record_entry)
     return records
