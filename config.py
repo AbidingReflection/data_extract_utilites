@@ -3,6 +3,6 @@ CONFIG = {
     "db_table_target": "extract_metrics",
     "extract_cols": ["artifact_type",
                      "seconds_elapsed",
-                      "api_call_count"]
-    
+                      "api_call_count"],
+    "archive_name": "extract_archive.db"
 }
