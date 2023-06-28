@@ -43,16 +43,18 @@ args = handle_args()
 validate_targets(args)
 
 db_names = get_db_list(args)
-# print(db_names)
-databases = get_databases(args, db_names)
+dbs = get_databases(args, db_names)
 
 archive_path = get_archive_path()
-filter_datetime = datetime.now() - timedelta(days=CONFIG["archive_day_threshold"])
-
-db_list = [databases[db_str] for db_str in databases if databases[db_str].extract_time < filter_datetime]
-
 
 # filter dbs outside of day range
+filter_datetime = datetime.now() - timedelta(days=CONFIG["archive_day_threshold"])
+db_list = [dbs[db_str] for db_str in dbs if dbs[db_str].extract_time < filter_datetime]
+print(db_list)
+
+# def process_dbs()
+
+
 # Process load metrics to archive
 # Move to recycling bin like folder
 # Update extract to process existing archives

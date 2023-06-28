@@ -1,6 +1,8 @@
 import argparse
 import os
+import re
 import sys
+
 
 def handle_args() -> argparse.Namespace:
     '''Sets up runtime arguments for search_dir & export_dir.'''
@@ -34,23 +36,14 @@ def get_db_list(args:argparse.Namespace)  -> list[str]:
     
     # Check for existing files in target dir
     files = os.listdir(args.search_dir)
-    
-    # Filters file names without hyphen
-    files = filter(lambda file: file[8] == '-',files)
-        
-    
-    # files = [file for file in files if os.path.isfile(args.search_dir + '/' + file)]
-    if not files:
-        sys.exit(f'No files found: "{args.export_dir}"')
 
     # Check for existing .db files in target dir
     db_files = [file for file in files if file[-3:] == ".db"]
     if not db_files:
         sys.exit(f'No .db files found: "{args.export_dir}"')
-        
+    
     # Check for formated .db files in target dir
-    fmt_db_files = [db_file for db_file in db_files if len(db_file) == 18]
+    fmt_db_files = [db_file for db_file in db_files if re.search("^[0-9]{8}-[0-9]{6}", db_file)]
     if not fmt_db_files:
         sys.exit(f'No properly formated .db files found: "{args.export_dir}"')
-    
     return fmt_db_files
