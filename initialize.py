@@ -3,6 +3,7 @@ import os
 import re
 import sys
 
+from config import CONFIG
 
 def handle_args() -> argparse.Namespace:
     '''Sets up runtime arguments for search_dir & export_dir.'''
@@ -43,7 +44,7 @@ def get_db_list(args:argparse.Namespace)  -> list[str]:
         sys.exit(f'No .db files found: "{args.export_dir}"')
     
     # Check for formated .db files in target dir
-    fmt_db_files = [db_file for db_file in db_files if re.search("^[0-9]{8}-[0-9]{6}", db_file)]
+    fmt_db_files = [db_file for db_file in db_files if re.search(CONFIG["db_file_regex_filter"], db_file)]
     if not fmt_db_files:
         sys.exit(f'No properly formated .db files found: "{args.export_dir}"')
     return fmt_db_files
