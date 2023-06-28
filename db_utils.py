@@ -1,8 +1,10 @@
 import argparse
+from collections import namedtuple
 from dataclasses import dataclass
 import datetime
 import sqlite3
 from config import CONFIG
+
 
 
 @dataclass
@@ -56,6 +58,7 @@ class Database:
         records = []
         
         for row in data:
+            Record = namedtuple("Record",CONFIG["extract_cols"])
             record = Record(*row)
             records.append(record)
         
